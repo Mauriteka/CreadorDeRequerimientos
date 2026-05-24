@@ -32,6 +32,11 @@ function renderTemplateList(container, templates, selectedId, onSelect) {
     const template = $("#templateListItemTemplate");
     container.innerHTML = "";
 
+    if (templates.length === 0) {
+        container.innerHTML = '<div class="applied-template-card"><p>Aun no hay plantillas.</p></div>';
+        return;
+    }
+
     templates.forEach(item => {
         const node = template.content.firstElementChild.cloneNode(true);
         node.classList.toggle("active", item.id === selectedId);
@@ -44,6 +49,11 @@ function renderTemplateList(container, templates, selectedId, onSelect) {
 
 function renderTemplatePreviewList(container, templates) {
     container.innerHTML = "";
+
+    if (templates.length === 0) {
+        container.innerHTML = '<div class="template-preview-card"><p>Aun no hay plantillas del sistema.</p></div>';
+        return;
+    }
 
     templates.forEach(template => {
         const card = document.createElement("div");

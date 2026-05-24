@@ -204,6 +204,16 @@ button:hover {
     padding: 26px;
 }
 
+.app-error-banner {
+    max-width: 1280px;
+    margin: 0 auto 16px;
+    padding: 12px 14px;
+    border: 1px solid rgba(180, 35, 24, 0.28);
+    border-radius: 8px;
+    background: rgba(180, 35, 24, 0.1);
+    color: var(--danger);
+}
+
 .auth-gate {
     position: fixed;
     inset: 0;
@@ -365,6 +375,7 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    padding-top: 16px;
 }
 
 .toolbar select {
@@ -1112,6 +1123,10 @@ summary {
 
     .workspace {
         padding: 18px;
+    }
+
+    .tab-panel {
+        padding-top: 14px;
     }
 
     .auth-card {

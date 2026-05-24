@@ -1,7 +1,11 @@
 export const api = {
     unauthorizedHandler: null,
+    errorHandler: null,
     setUnauthorizedHandler(handler) {
         api.unauthorizedHandler = handler;
+    },
+    setErrorHandler(handler) {
+        api.errorHandler = handler;
     },
     async request(path, options = {}) {
         const response = await fetch(path, {
@@ -15,6 +19,9 @@ export const api = {
             error.status = response.status;
             if (response.status === 401 && typeof api.unauthorizedHandler === "function") {
                 api.unauthorizedHandler();
+            }
+            if (typeof api.errorHandler === "function") {
+                api.errorHandler(error, path);
             }
             throw error;
         }

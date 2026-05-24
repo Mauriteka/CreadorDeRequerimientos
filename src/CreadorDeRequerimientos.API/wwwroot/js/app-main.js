@@ -32,9 +32,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     api.setUnauthorizedHandler(handleUnauthorized);
+    api.setErrorHandler(showApiError);
     wireEvents();
     setupSpeech();
-    await bootstrapApp();
+    try {
+        await bootstrapApp();
+    } catch (error) {
+        showApiError(error, "inicio");
+    }
     renderApp();
 });
 
@@ -126,6 +131,7 @@ function updateThemeToggleLabel(theme) {
 }
 
 async function loadWorkspace() {
+    clearApiError();
     if (state.auth.enabled && !state.auth.isAuthenticated) {
         state.projects = [];
         state.systemTemplates = [];
@@ -224,6 +230,27 @@ function renderAuthStatusBanner() {
     banner.textContent = state.auth.isAuthenticated
         ? `Sesion abierta como ${state.auth.username || "admin"}`
         : "La app requiere login para abrir datos y editar contenido.";
+}
+
+function showApiError(error, path) {
+    const banner = $("#appErrorBanner");
+    if (!banner) {
+        return;
+    }
+
+    const detail = error?.status ? `Error HTTP ${error.status}` : "No pude conectar con el servidor";
+    banner.textContent = `${detail}. Revisa tu sesion o intenta recargar la pagina. Ruta: ${path}`;
+    banner.classList.remove("hidden");
+}
+
+function clearApiError() {
+    const banner = $("#appErrorBanner");
+    if (!banner) {
+        return;
+    }
+
+    banner.textContent = "";
+    banner.classList.add("hidden");
 }
 
 async function refreshAuthState() {
