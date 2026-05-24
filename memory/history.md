@@ -79,3 +79,11 @@
 - Changes: Expanded the default system template factory to seed four templates: base requirements discovery, operational process, existing system improvement and reporting/dashboard; made normalization add missing default templates without duplicating existing templates by name.
 - Pending: Redeploy Railway and confirm the system template catalog shows the full starter pack.
 - Risks: Existing production workspaces only receive the new templates when the workspace is loaded and normalization can save to the configured persistent volume.
+
+## 2026-05-23 - Minute Draft Regeneration
+
+- Date: 2026-05-23
+- Task: Fix cases where the validation minute only showed the survey title.
+- Changes: The survey UI now regenerates minute text when the current draft has saved transcript turns but no section structure; saving/finalizing a minute first syncs pending capture buffers so recently dictated text is included.
+- Pending: Redeploy Railway and retest saving/finalizing a survey with transcript turns.
+- Risks: If no turns were saved at all, the minute can only show the header and suggested sections until capture sync succeeds.

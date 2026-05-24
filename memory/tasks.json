@@ -17,7 +17,8 @@
     "Add LAN run/publish scripts for phone access",
     "Add session login and Docker deployment prep",
     "Fix production auth route grouping so login and workspace APIs work together",
-    "Expand default system template seeds for production"
+    "Expand default system template seeds for production",
+    "Regenerate minute drafts when only the header was saved"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -27,7 +28,8 @@
     "Validate dictation behavior on a real mobile browser",
     "Validate hosted login plus persistent volume on a real Internet deployment",
     "Retest production project/template creation after Railway redeploy",
-    "Confirm the full default template pack appears in Railway"
+    "Confirm the full default template pack appears in Railway",
+    "Retest production minute generation after a dictated interview"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -42,7 +44,8 @@
     "The recommended first mobile setup is LAN access from the same Wi-Fi network.",
     "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage.",
     "Auth endpoints must remain outside the protected workspace API route group.",
-    "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones."
+    "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones.",
+    "Minute generation should regenerate title-only drafts when saved transcript turns exist."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",

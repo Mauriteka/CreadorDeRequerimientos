@@ -1031,7 +1031,7 @@ function renderSurveyReview(survey, card) {
     const preferredDraft = survey.minuteDraft?.trim()
         ? survey.minuteDraft
         : (survey.suggestedMinute || survey.conversationCopy || "");
-    const draft = shouldRegenerateMinuteText(preferredDraft)
+    const draft = shouldRegenerateMinuteText(preferredDraft, survey)
         ? buildMinuteTextFromSurvey(survey)
         : normalizeMinuteText(preferredDraft, survey);
 
@@ -1051,7 +1051,10 @@ function renderSurveyReview(survey, card) {
     saveButton.className = "primary";
     saveButton.textContent = survey.isFinalized ? "Guardar validacion" : "Guardar minuta";
     saveButton.addEventListener("click", async () => {
-        state.currentProject = await api.updateSurvey(state.currentProject.id, survey.id, buildSurveyUpdateRequest(survey, card));
+        await syncPendingSurveyCapture(survey.id);
+        const freshSurvey = getSurveyById(survey.id) ?? survey;
+        const minuteDraft = buildReviewMinuteDraft(freshSurvey, card);
+        state.currentProject = await api.updateSurvey(state.currentProject.id, survey.id, buildSurveyUpdateRequest(freshSurvey, card, { minuteDraft }));
         await getAppHandlers().loadWorkspace();
         await getAppHandlers().refreshCurrentProject();
         getAppHandlers().renderApp();
@@ -1093,12 +1096,10 @@ async function completeSurveyFinalization(surveyId) {
     const card = getSurveyCard(surveyId);
     if (!survey || !card) return;
 
-    const minuteDraft = card.querySelector(".review-minute-text")?.value
-        || survey.minuteDraft
-        || survey.suggestedMinute
-        || survey.conversationCopy
-        || buildMinuteTextFromSurvey(survey);
-    state.currentProject = await api.updateSurvey(state.currentProject.id, surveyId, buildSurveyUpdateRequest(survey, card, {
+    await syncPendingSurveyCapture(surveyId);
+    const freshSurvey = getSurveyById(surveyId) ?? survey;
+    const minuteDraft = buildReviewMinuteDraft(freshSurvey, card);
+    state.currentProject = await api.updateSurvey(state.currentProject.id, surveyId, buildSurveyUpdateRequest(freshSurvey, card, {
         minuteDraft,
         isFinalized: true
     }));
@@ -1124,11 +1125,32 @@ async function openMailDraftForSurvey(surveyId) {
         .filter(Boolean);
     const subject = `Validacion de minuta - ${request.title}`;
     const preferredDraft = request.minuteDraft || survey.suggestedMinute || survey.conversationCopy || "";
-    const body = shouldRegenerateMinuteText(preferredDraft)
+    const body = shouldRegenerateMinuteText(preferredDraft, survey)
         ? buildMinuteTextFromSurvey(survey)
         : normalizeMinuteText(preferredDraft, survey);
     const mailto = `mailto:${recipients.map(item => encodeURIComponent(item)).join(",")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
+}
+
+async function syncPendingSurveyCapture(surveyId) {
+    const pendingBuffers = Object.entries(state.captureBuffers ?? {})
+        .filter(([, buffer]) => buffer?.surveyId === surveyId && buffer.text?.trim());
+
+    for (const [bufferKey] of pendingBuffers) {
+        await syncCaptureBuffer(bufferKey);
+    }
+}
+
+function buildReviewMinuteDraft(survey, card) {
+    const currentDraft = card.querySelector(".review-minute-text")?.value
+        || survey.minuteDraft
+        || survey.suggestedMinute
+        || survey.conversationCopy
+        || "";
+
+    return shouldRegenerateMinuteText(currentDraft, survey)
+        ? buildMinuteTextFromSurvey(survey)
+        : normalizeMinuteText(currentDraft, survey);
 }
 
 async function copyTextToClipboard(text) {
@@ -1632,13 +1654,19 @@ function restartRecognitionForPendingCapture(pending) {
     setTimeout(tryStart, 100);
 }
 
-function shouldRegenerateMinuteText(text) {
+function shouldRegenerateMinuteText(text, survey = null) {
     const normalized = (text || "").trim().toLowerCase();
     if (!normalized) {
         return true;
     }
 
-    return normalized.includes("### undefined") || normalized.includes("### pregunta sin titulo");
+    if (normalized.includes("### undefined") || normalized.includes("### pregunta sin titulo")) {
+        return true;
+    }
+
+    const hasSavedTurns = survey ? getSurveyTurns(survey).some(turn => turn.text?.trim()) : false;
+    const hasMinuteStructure = normalized.includes("###") || normalized.includes("notas sugeridas:");
+    return hasSavedTurns && !hasMinuteStructure;
 }
 
 function buildMinuteTextFromSurvey(survey) {
