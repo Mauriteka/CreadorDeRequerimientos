@@ -95,3 +95,11 @@
 - Changes: Mobile browsers now use manual speech sessions instead of continuous auto-restart; when Android/iOS ends recognition, the app syncs current text, pauses capture and asks the user to tap start again.
 - Pending: Redeploy Railway and validate microphone behavior on Android Chrome.
 - Risks: Mobile dictation now requires more taps, but avoids the repeated connect/disconnect loop.
+
+## 2026-05-23 - Mobile Manual Capture Fallback
+
+- Date: 2026-05-23
+- Task: Prevent Android Web Speech crashes after manual speech sessions still behaved unpredictably.
+- Changes: Android and iOS no longer instantiate browser speech recognition; the interview capture panel shows a disabled `Solo texto` action and keeps the text area active for stable manual capture with transcript/minute sync.
+- Pending: Redeploy Railway and validate that mobile interview capture works by selecting a participant and typing in the turn box.
+- Risks: Mobile dictation is temporarily unavailable until a safer speech capture path is validated.

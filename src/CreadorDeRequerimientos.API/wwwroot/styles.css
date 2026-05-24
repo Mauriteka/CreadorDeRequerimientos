@@ -95,6 +95,15 @@ button:hover {
     border-color: var(--accent);
 }
 
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+
+button:disabled:hover {
+    border-color: var(--line);
+}
+
 .primary {
     background: var(--accent);
     border-color: var(--accent);

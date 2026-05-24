@@ -352,6 +352,7 @@ function renderCapturePanel(survey, card, captureState) {
     panel.className = "guide-capture-card";
     applyThemeVariables(panel, getParticipantTheme(survey, captureState.speakerId));
     const participants = getSurveyParticipants(survey);
+    const canUseSpeechCapture = isSpeechCaptureAvailable();
 
     const statusRow = document.createElement("div");
     statusRow.className = "capture-status-row";
@@ -387,9 +388,13 @@ function renderCapturePanel(survey, card, captureState) {
     controls.appendChild(participantsNode);
 
     const startStopButton = createCaptureButton(
-        captureState.status === "idle" ? "Iniciar" : "Detener",
-        "primary",
+        canUseSpeechCapture ? (captureState.status === "idle" ? "Iniciar" : "Detener") : "Solo texto",
+        canUseSpeechCapture ? "primary" : "",
         async () => {
+            if (!canUseSpeechCapture) {
+                return;
+            }
+
             if (captureState.status === "idle") {
                 await startCapture(survey, card, captureState.speakerId);
                 return;
@@ -397,6 +402,10 @@ function renderCapturePanel(survey, card, captureState) {
 
             stopCapture("stop");
         });
+    startStopButton.disabled = !canUseSpeechCapture;
+    if (!canUseSpeechCapture) {
+        startStopButton.title = "Dictado desactivado en este dispositivo; usa la caja de texto.";
+    }
     controls.appendChild(startStopButton);
 
     const memory = document.createElement("div");
@@ -668,6 +677,7 @@ function getSurveyTurns(survey) {
 }
 
 function resolveCaptureHint(captureState) {
+    if (!isSpeechCaptureAvailable()) return "Dictado desactivado en este dispositivo; escribe el turno aqui.";
     if (captureState.processing) return "El navegador sigue convirtiendo voz a texto.";
     if (captureState.status === "recording") return "Transcribiendo en vivo mientras hablas.";
     if (captureState.status === "paused") return "Turno pausado; puedes corregir el texto y continuar.";
@@ -771,7 +781,7 @@ async function updateActiveCaptureDraft(surveyId, card, patch) {
     if (!state.activeCapture || state.activeCapture.surveyId !== surveyId) {
         state.activeCapture = createDraftTurnCapture(survey, card, speakerId, questionContext, {
             status: "idle",
-            sourceType: "Voice"
+            sourceType: resolveCaptureSourceType()
         });
     }
 
@@ -823,7 +833,7 @@ async function syncCaptureBuffer(bufferKey) {
             text: capture.text,
             tag: buildQuestionTag(capture.questionKey, capture.questionLabel),
             important: capture.important,
-            sourceType: capture.sourceType ?? "Voice"
+            sourceType: capture.sourceType ?? resolveCaptureSourceType()
         };
 
         let project;
@@ -1004,7 +1014,7 @@ function getOrCreateCaptureBuffer(capture) {
             syncTimer: null,
             syncPromise: Promise.resolve(),
             isActive: true,
-            sourceType: capture.sourceType ?? "Voice"
+            sourceType: capture.sourceType ?? resolveCaptureSourceType()
         };
     }
 
@@ -1183,7 +1193,7 @@ async function switchCaptureContext(survey, options = {}) {
     const shouldResumeRecording = Boolean(options.shouldResumeRecording);
     const nextCapture = createDraftTurnCapture(survey, card, speakerId, questionContext, {
         status: shouldResumeRecording ? "recording" : "idle",
-        sourceType: "Voice"
+        sourceType: shouldResumeRecording ? "Voice" : resolveCaptureSourceType()
     });
 
     if (!state.activeCapture || state.activeCapture.surveyId !== survey.id || state.activeCapture.status === "idle") {
@@ -1292,7 +1302,7 @@ function createDraftTurnCapture(survey, card, speakerId, questionContext, overri
         text: "",
         important: false,
         turnId: null,
-        sourceType: "Voice",
+        sourceType: resolveCaptureSourceType(),
         card,
         questionKey: questionContext.questionKey,
         questionLabel: questionContext.questionLabel,
@@ -1721,6 +1731,14 @@ function shouldUseManualMobileSpeech() {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
 }
 
+function isSpeechCaptureAvailable() {
+    return Boolean(state.recognition);
+}
+
+function resolveCaptureSourceType() {
+    return isSpeechCaptureAvailable() ? "Voice" : "Manual";
+}
+
 export function setupSpeech() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -1728,10 +1746,16 @@ export function setupSpeech() {
         return;
     }
 
+    if (shouldUseManualMobileSpeech()) {
+        state.recognition = null;
+        setSpeechStatus("Dictado movil desactivado; captura manual lista");
+        return;
+    }
+
     state.recognition = new SpeechRecognition();
     state.recognition.lang = "es-MX";
     state.recognition.interimResults = true;
-    state.recognition.continuous = !shouldUseManualMobileSpeech();
+    state.recognition.continuous = true;
     state.recognition.maxAlternatives = 1;
     state.recognition.onstart = () => {
         if (!state.activeCapture) return;
@@ -1795,7 +1819,7 @@ export function setupSpeech() {
             state.activeCapture = freshSurvey
                 ? createDraftTurnCapture(freshSurvey, freshCard, capture.speakerId, questionContext, {
                     status: "idle",
-                    sourceType: capture.sourceType ?? "Voice"
+                    sourceType: capture.sourceType ?? resolveCaptureSourceType()
                 })
                 : null;
             setSpeechStatus("Dictado listo");
@@ -1813,7 +1837,7 @@ export function setupSpeech() {
                 state.activeCapture = freshSurvey
                     ? createDraftTurnCapture(freshSurvey, freshCard, capture.speakerId, questionContext, {
                         status: "idle",
-                        sourceType: capture.sourceType ?? "Voice"
+                        sourceType: capture.sourceType ?? resolveCaptureSourceType()
                     })
                     : null;
                 setSpeechStatus("Dictado listo");

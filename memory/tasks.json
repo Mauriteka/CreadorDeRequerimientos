@@ -19,7 +19,8 @@
     "Fix production auth route grouping so login and workspace APIs work together",
     "Expand default system template seeds for production",
     "Regenerate minute drafts when only the header was saved",
-    "Stabilize mobile speech recognition by disabling auto-reconnect"
+    "Stabilize mobile speech recognition by disabling auto-reconnect",
+    "Disable unstable Web Speech dictation on mobile and keep manual capture active"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -31,7 +32,7 @@
     "Retest production project/template creation after Railway redeploy",
     "Confirm the full default template pack appears in Railway",
     "Retest production minute generation after a dictated interview",
-    "Retest Android microphone behavior after Railway redeploy"
+    "Retest Android manual interview capture after Railway redeploy"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -48,7 +49,8 @@
     "Auth endpoints must remain outside the protected workspace API route group.",
     "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones.",
     "Minute generation should regenerate title-only drafts when saved transcript turns exist.",
-    "Mobile speech capture should pause after recognition ends instead of auto-restarting in a loop."
+    "Mobile speech capture should pause after recognition ends instead of auto-restarting in a loop.",
+    "Android and iOS browsers should not instantiate Web Speech recognition until a safer mobile capture path is validated."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",
@@ -61,7 +63,8 @@
     "Require future survey/voice work to preserve the documented interview workflow unless the docs are intentionally updated.",
     "Prefer LAN exposure over Internet deployment as the first phone-access path because the app is local-first and has no login.",
     "Use a shared session login backed by environment variables as the first online protection layer instead of introducing a full user system.",
-    "Protect only workspace API endpoints with authorization; keep auth status/login/logout public."
+    "Protect only workspace API endpoints with authorization; keep auth status/login/logout public.",
+    "Prefer manual text capture on mobile over unstable browser speech recognition for the hosted app."
   ],
   "blocked_items": [],
   "next_actions": [
