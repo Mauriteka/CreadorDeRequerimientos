@@ -104,6 +104,14 @@
 - Pending: Redeploy Railway and validate that mobile interview capture works by selecting a participant and typing in the turn box.
 - Risks: Mobile dictation is temporarily unavailable until a safer speech capture path is validated.
 
+## 2026-05-24 - Mobile Manual Dictation Re-enabled
+
+- Date: 2026-05-24
+- Task: Restore the ability to start dictation on Android while avoiding the reconnect loop.
+- Changes: Mobile browsers instantiate Web Speech again, but keep `continuous=false`; when Android ends a short session, the app syncs text, pauses capture and shows `Continuar` so the user can manually start the next session.
+- Pending: Redeploy Railway and validate that Android shows `Iniciar`, then `Continuar` after Chrome ends the recognition session.
+- Risks: Chrome Android may still limit each recognition session to a few seconds, but the app should not auto-reconnect or block the user in `Solo texto`.
+
 ## 2026-05-23 - SQLite Workspace Persistence
 
 - Date: 2026-05-23

@@ -20,7 +20,7 @@
     "Expand default system template seeds for production",
     "Regenerate minute drafts when only the header was saved",
     "Stabilize mobile speech recognition by disabling auto-reconnect",
-    "Disable unstable Web Speech dictation on mobile and keep manual capture active"
+    "Re-enable manual mobile dictation sessions without continuous auto-reconnect"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -32,7 +32,7 @@
     "Retest production project/template creation after Railway redeploy",
     "Confirm the full default template pack appears in Railway",
     "Retest production minute generation after a dictated interview",
-    "Retest Android manual interview capture after Railway redeploy"
+    "Retest Android manual dictation sessions after Railway redeploy"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -50,7 +50,7 @@
     "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones.",
     "Minute generation should regenerate title-only drafts when saved transcript turns exist.",
     "Mobile speech capture should pause after recognition ends instead of auto-restarting in a loop.",
-    "Android and iOS browsers should not instantiate Web Speech recognition until a safer mobile capture path is validated."
+    "Android and iOS use short manual Web Speech sessions; when the browser ends recognition, the UI should show Continuar instead of reconnecting automatically."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",
@@ -64,7 +64,7 @@
     "Prefer LAN exposure over Internet deployment as the first phone-access path because the app is local-first and has no login.",
     "Use a shared session login backed by environment variables as the first online protection layer instead of introducing a full user system.",
     "Protect only workspace API endpoints with authorization; keep auth status/login/logout public.",
-    "Prefer manual text capture on mobile over unstable browser speech recognition for the hosted app."
+    "Prefer manual mobile dictation sessions over continuous recognition for the hosted app."
   ],
   "blocked_items": [],
   "next_actions": [

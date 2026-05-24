@@ -387,15 +387,16 @@ function renderCapturePanel(survey, card, captureState) {
         });
     controls.appendChild(participantsNode);
 
+    const isRecording = captureState.status === "recording";
     const startStopButton = createCaptureButton(
-        canUseSpeechCapture ? (captureState.status === "idle" ? "Iniciar" : "Detener") : "Solo texto",
+        canUseSpeechCapture ? resolveCaptureActionLabel(captureState) : "Solo texto",
         canUseSpeechCapture ? "primary" : "",
         async () => {
             if (!canUseSpeechCapture) {
                 return;
             }
 
-            if (captureState.status === "idle") {
+            if (!isRecording) {
                 await startCapture(survey, card, captureState.speakerId);
                 return;
             }
@@ -455,6 +456,12 @@ function createCaptureButton(text, className, onClick) {
     button.className = className;
     button.addEventListener("click", onClick);
     return button;
+}
+
+function resolveCaptureActionLabel(captureState) {
+    if (captureState.status === "recording") return "Detener";
+    if (captureState.status === "paused") return "Continuar";
+    return "Iniciar";
 }
 
 function renderParticipants(survey, card) {
@@ -1746,16 +1753,10 @@ export function setupSpeech() {
         return;
     }
 
-    if (shouldUseManualMobileSpeech()) {
-        state.recognition = null;
-        setSpeechStatus("Dictado movil desactivado; captura manual lista");
-        return;
-    }
-
     state.recognition = new SpeechRecognition();
     state.recognition.lang = "es-MX";
     state.recognition.interimResults = true;
-    state.recognition.continuous = true;
+    state.recognition.continuous = !shouldUseManualMobileSpeech();
     state.recognition.maxAlternatives = 1;
     state.recognition.onstart = () => {
         if (!state.activeCapture) return;
