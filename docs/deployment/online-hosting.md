@@ -8,18 +8,21 @@ Necesitas tres cosas:
 
 1. `https` en el hosting.
 2. Variables de entorno para el login.
-3. Almacenamiento persistente para `workspace.json`.
+3. Almacenamiento persistente para `workspace.db`.
 
 ## Variables recomendadas
 
 ```text
 Auth__Username=admin
 Auth__Password=TU_PASSWORD_LARGO
+Workspace__Storage=sqlite
+Workspace__DatabaseFile=/data/workspace.db
 Workspace__DataFile=/data/workspace.json
 ```
 
 `Auth__Password` no debe vivir en el repo.
 Configuralo solo en el panel de secretos del hosting.
+`Workspace__DataFile` se mantiene como ruta legacy para importar datos viejos si la base SQLite arranca vacia.
 
 ## Docker
 
@@ -32,16 +35,27 @@ docker build -t creador-requerimientos .
 docker run -p 8080:8080 `
   -e Auth__Username=admin `
   -e Auth__Password=CAMBIA_ESTE_PASSWORD `
+  -e Workspace__Storage=sqlite `
+  -e Workspace__DatabaseFile=/data/workspace.db `
   -e Workspace__DataFile=/data/workspace.json `
   creador-requerimientos
 ```
 
 ## Persistencia
 
-El sistema guarda todo en un archivo JSON.
+El sistema guarda todo en una base SQLite embebida.
 Si el hosting no monta disco o volumen persistente, perderas datos al redeployar o reiniciar.
 
-Por eso `Workspace__DataFile` debe apuntar a una ruta dentro del volumen persistente del proveedor.
+Por eso `Workspace__DatabaseFile` debe apuntar a una ruta dentro del volumen persistente del proveedor.
+
+Si `workspace.db` no existe o esta vacia, la app intenta importar automaticamente el contenido de `Workspace__DataFile`.
+El JSON no se borra y queda como respaldo.
+Para rollback temporal al almacenamiento anterior puedes configurar:
+
+```text
+Workspace__Storage=json
+Workspace__DataFile=/data/workspace.json
+```
 
 ## Ruta sugerida para empezar
 

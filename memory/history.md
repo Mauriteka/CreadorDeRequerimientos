@@ -103,3 +103,11 @@
 - Changes: Android and iOS no longer instantiate browser speech recognition; the interview capture panel shows a disabled `Solo texto` action and keeps the text area active for stable manual capture with transcript/minute sync.
 - Pending: Redeploy Railway and validate that mobile interview capture works by selecting a participant and typing in the turn box.
 - Risks: Mobile dictation is temporarily unavailable until a safer speech capture path is validated.
+
+## 2026-05-23 - SQLite Workspace Persistence
+
+- Date: 2026-05-23
+- Task: Move default workspace persistence from JSON to an embedded SQLite database.
+- Changes: Added a SQLite-backed `IRequirementWorkspaceStore` that stores the workspace as a JSON document in `workspace_state`; changed API configuration to use `Workspace__Storage=sqlite` and `Workspace__DatabaseFile` by default; kept JSON storage available with `Workspace__Storage=json`; documented deployment variables and automatic import from legacy `workspace.json`.
+- Pending: Validate the deployed volume keeps `/data/workspace.db` across redeploys and confirm the first production boot imports existing JSON data.
+- Risks: The first run needs write permissions on the configured database directory; rollback to JSON is available if SQLite package or hosting file permissions misbehave.

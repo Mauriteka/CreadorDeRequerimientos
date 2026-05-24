@@ -16,8 +16,9 @@ Flujo principal:
 5. Capturar voz o texto por turnos.
 6. Revisar transcript, minuta y requerimientos.
 
-No hay login.
-Los datos se guardan en `data/workspace.json`.
+No hay login multiusuario.
+Los datos se guardan por defecto en `data/workspace.db` con SQLite embebido.
+Si la base esta vacia, el sistema puede importar `data/workspace.json` como respaldo legacy.
 
 ## Arquitectura actual
 
@@ -32,7 +33,8 @@ Los datos se guardan en `data/workspace.json`.
   - Mapeo a DTOs.
   - Plantilla por defecto.
 - `Infrastructure`
-  - Persistencia JSON local.
+  - Persistencia SQLite local por defecto.
+  - Persistencia JSON disponible como rollback por configuracion.
 - `Contracts`
   - DTOs de API.
 - `API`

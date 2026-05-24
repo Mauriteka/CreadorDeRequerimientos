@@ -28,6 +28,22 @@ if (string.IsNullOrWhiteSpace(dataFile))
 {
     dataFile = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "data", "workspace.json"));
 }
+else if (!Path.IsPathFullyQualified(dataFile))
+{
+    dataFile = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, dataFile));
+}
+
+var databaseFile = builder.Configuration["Workspace:DatabaseFile"];
+if (string.IsNullOrWhiteSpace(databaseFile))
+{
+    databaseFile = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "data", "workspace.db"));
+}
+else if (!Path.IsPathFullyQualified(databaseFile))
+{
+    databaseFile = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, databaseFile));
+}
+
+var workspaceStorage = builder.Configuration["Workspace:Storage"]?.Trim().ToLowerInvariant();
 
 builder.Services.Configure<WorkspaceAuthOptions>(builder.Configuration.GetSection(WorkspaceAuthOptions.SectionName));
 builder.Services.AddSingleton<WorkspaceAuthService>();
@@ -64,7 +80,12 @@ builder.Services.AddSingleton<WorkspaceNormalizer>();
 builder.Services.AddSingleton<SurveyParticipantFactory>();
 builder.Services.AddSingleton<SurveyTranscriptFormatter>();
 builder.Services.AddSingleton<WorkspaceResponseMapper>();
-builder.Services.AddSingleton<IRequirementWorkspaceStore>(_ => new JsonRequirementWorkspaceStore(dataFile));
+builder.Services.AddSingleton<IRequirementWorkspaceStore>(_ => workspaceStorage switch
+{
+    "json" => new JsonRequirementWorkspaceStore(dataFile),
+    "sqlite" or null or "" => new SqliteRequirementWorkspaceStore(databaseFile, dataFile),
+    _ => throw new InvalidOperationException($"Workspace:Storage '{workspaceStorage}' no es compatible. Usa 'sqlite' o 'json'.")
+});
 
 var app = builder.Build();
 

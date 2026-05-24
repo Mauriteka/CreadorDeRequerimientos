@@ -6,4 +6,6 @@ obj/
 *.log
 artifacts/
 data/*.json
+data/*.db
+data/*.db-*
 data/*.tmp
