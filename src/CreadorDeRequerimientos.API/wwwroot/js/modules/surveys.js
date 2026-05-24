@@ -1060,6 +1060,16 @@ function renderSurveyReview(survey, card) {
         getAppHandlers().renderApp();
     });
 
+    const reloadButton = document.createElement("button");
+    reloadButton.type = "button";
+    reloadButton.textContent = "Recargar minuta";
+    reloadButton.addEventListener("click", async () => {
+        await syncPendingSurveyCapture(survey.id);
+        const freshSurvey = getSurveyById(survey.id) ?? survey;
+        card.querySelector(".review-minute-text").value = buildMinuteTextFromSurvey(freshSurvey);
+        setSpeechStatus("Minuta regenerada desde el transcript");
+    });
+
     const copyButton = document.createElement("button");
     copyButton.type = "button";
     copyButton.textContent = "Copiar minuta";
@@ -1075,6 +1085,7 @@ function renderSurveyReview(survey, card) {
     });
 
     actions.appendChild(saveButton);
+    actions.appendChild(reloadButton);
     actions.appendChild(copyButton);
     actions.appendChild(mailButton);
     container.appendChild(form);
