@@ -88,9 +88,18 @@ builder.Services.AddSingleton<IRequirementWorkspaceStore>(_ => workspaceStorage 
 });
 
 var app = builder.Build();
+var staticFileCacheOptions = new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        context.Context.Response.Headers.CacheControl = "no-store, no-cache, must-revalidate, max-age=0";
+        context.Context.Response.Headers.Pragma = "no-cache";
+        context.Context.Response.Headers.Expires = "0";
+    }
+};
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
+app.UseStaticFiles(staticFileCacheOptions);
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -211,6 +220,6 @@ secureApi.MapPost("/projects/{projectId:guid}/requirements/draft", async (Guid p
     await service.CreateDraftRequirementAsync(projectId, request, cancellationToken) is { } project ? Results.Ok(project) : Results.NotFound());
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
-app.MapFallbackToFile("index.html");
+app.MapFallbackToFile("index.html", staticFileCacheOptions);
 
 app.Run();

@@ -4,7 +4,7 @@ import { api } from "./core/api.js";
 import { registerAppHandlers } from "./core/app-context.js";
 import { createProject, deleteCurrentProject, openProject, renderProjectList, saveCurrentProject } from "./modules/project.js";
 import { createDraftRequirement, deleteRequirement, renderRequirements, selectRequirement, saveRequirement } from "./modules/requirements.js";
-import { createSurvey, renderSurveyTemplateSelect, renderSurveys, setupSpeech } from "./modules/surveys.js";
+import { createSurvey, renderSurveyTemplateSelect, renderSurveys, setupSpeech } from "./modules/surveys.js?v=20260524-android-cache";
 import {
     appendInterviewSection,
     appendMinuteSection,
