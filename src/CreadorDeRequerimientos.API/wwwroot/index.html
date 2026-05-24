@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Creador de Requerimientos</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div id="appShell" class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-mark">CR</span>
+                <div>
+                    <strong>Creador de Requerimientos</strong>
+                    <small>Entrevistas, voces y minutas</small>
+                </div>
+            </div>
+            <div class="sidebar-actions">
+                <button id="newProjectButton" class="primary">+ Proyecto</button>
+                <button id="systemTemplatesButton">Plantillas del sistema</button>
+                <button id="themeToggleButton" type="button">Modo oscuro</button>
+                <button id="logoutButton" type="button" class="hidden">Cerrar sesion</button>
+            </div>
+
+            <div id="authStatusBanner" class="auth-status-banner hidden"></div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Proyectos</div>
+                <div id="projectList" class="project-list"></div>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            <section id="homePanel" class="panel home-panel">
+                <div class="hero">
+                    <p class="eyebrow">Tu centro de entrevistas</p>
+                    <h1>Levanta requerimientos con transcript por hablante y plantillas reutilizables.</h1>
+                    <p class="hero-copy">Crea un proyecto, elige una plantilla y captura la conversacion por turnos: tu voz como Yo, y el resto como Persona 1, Persona 2, Persona 3...</p>
+                </div>
+            </section>
+
+            <section id="systemTemplatesPanel" class="panel hidden">
+                <header class="page-header">
+                    <div>
+                        <p class="eyebrow">Catalogo global</p>
+                        <h2>Plantillas del sistema</h2>
+                    </div>
+                    <button id="newSystemTemplateButton" class="primary">+ Plantilla del sistema</button>
+                </header>
+
+                <div class="template-page-layout">
+                    <div class="template-column">
+                        <div id="systemTemplateList" class="template-list"></div>
+                    </div>
+                    <div class="template-column wide">
+                        <form id="systemTemplateForm" class="template-editor">
+                            <div class="form-actions top-actions">
+                                <button type="submit" class="primary">Guardar plantilla</button>
+                                <button type="button" id="deleteSystemTemplateButton" class="danger">Eliminar</button>
+                                <button type="button" id="resetSystemTemplateButton">Nueva</button>
+                            </div>
+                            <input id="systemTemplateName" placeholder="Nombre de la plantilla">
+                            <textarea id="systemTemplateDescription" placeholder="Descripcion breve del objetivo de esta plantilla."></textarea>
+
+                            <section class="editor-section">
+                                <div class="section-header">
+                                    <h3>Guion de entrevista</h3>
+                                    <button type="button" id="addSystemInterviewSectionButton">+ Seccion</button>
+                                </div>
+                                <div id="systemInterviewSections" class="section-list"></div>
+                            </section>
+
+                            <section class="editor-section">
+                                <div class="section-header">
+                                    <h3>Estructura de minuta</h3>
+                                    <button type="button" id="addSystemMinuteSectionButton">+ Seccion</button>
+                                </div>
+                                <div id="systemMinuteSections" class="section-list"></div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projectPanel" class="panel hidden">
+                <header class="project-header">
+                    <div>
+                        <input id="projectName" class="title-input" placeholder="Proyecto">
+                        <input id="featureName" class="subtitle-input" placeholder="Funcionalidad">
+                    </div>
+                    <div class="header-actions">
+                        <button id="saveProjectButton">Guardar</button>
+                        <button id="deleteProjectButton" class="danger">Eliminar</button>
+                    </div>
+                </header>
+
+                <textarea id="projectNotes" class="notes" placeholder="Contexto del proyecto, alcance, dudas o decisiones."></textarea>
+
+                <nav class="tabs">
+                    <button class="tab active" data-tab="surveys">Encuestas</button>
+                    <button class="tab" data-tab="requirements">Requerimientos</button>
+                    <button class="tab" data-tab="templates">Plantillas del proyecto</button>
+                </nav>
+
+                <div id="surveysTab" class="tab-panel">
+                    <div class="toolbar">
+                        <button id="newSurveyButton" class="primary">+ Encuesta</button>
+                    </div>
+                    <div id="surveyList" class="survey-list"></div>
+                </div>
+
+                <div id="requirementsTab" class="tab-panel hidden">
+                    <div class="toolbar">
+                        <button id="newRequirementButton" class="primary">+ Requerimiento</button>
+                        <button id="draftRequirementButton">Generar borrador desde encuestas</button>
+                        <button id="deleteRequirementButton" class="danger">Eliminar requerimiento</button>
+                    </div>
+                    <div class="requirements-layout">
+                        <div class="requirements-sidebar">
+                            <div id="requirementList" class="requirement-list"></div>
+                        </div>
+                        <form id="requirementForm" class="requirement-editor">
+                            <select id="requirementStage">
+                                <option value="toma">Toma de requerimiento</option>
+                                <option value="planeacion">Planeacion de requerimiento</option>
+                                <option value="diseno">Diseno de requerimiento</option>
+                            </select>
+                            <input id="requirementTitle" placeholder="Titulo del requerimiento">
+                            <textarea id="requirementSummary" placeholder="Resumen corto del requerimiento."></textarea>
+                            <section class="editor-section">
+                                <div class="section-header">
+                                    <h3>Encuestas que apoyan este requerimiento</h3>
+                                </div>
+                                <div id="requirementSurveyLinks" class="check-list"></div>
+                            </section>
+                            <section class="editor-section">
+                                <div class="section-header">
+                                    <h3>Requerimientos de apoyo o antecedente</h3>
+                                </div>
+                                <div id="relatedRequirementLinks" class="check-list"></div>
+                            </section>
+                            <textarea id="requirementContent" placeholder="Redacta aqui el requerimiento o ajusta el borrador generado."></textarea>
+                            <button class="primary">Guardar requerimiento</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="templatesTab" class="tab-panel hidden">
+                    <div class="template-page-layout">
+                        <div class="template-column">
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <h3>Plantillas del proyecto</h3>
+                                    <button type="button" id="newProjectTemplateButton">+ Plantilla</button>
+                                </div>
+                                <div id="projectTemplateList" class="template-list"></div>
+                            </div>
+
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <h3>Plantillas del sistema</h3>
+                                </div>
+                                <div id="projectSystemTemplateList" class="template-list compact-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="template-column wide">
+                            <form id="projectTemplateForm" class="template-editor">
+                                <div class="form-actions top-actions">
+                                    <button type="submit" class="primary">Guardar plantilla</button>
+                                    <button type="button" id="exportProjectTemplateButton">Exportar al sistema</button>
+                                    <button type="button" id="deleteProjectTemplateButton" class="danger">Eliminar</button>
+                                    <button type="button" id="resetProjectTemplateButton">Nueva</button>
+                                </div>
+                                <input id="projectTemplateName" placeholder="Nombre de la plantilla">
+                                <textarea id="projectTemplateDescription" placeholder="Descripcion breve del objetivo de esta plantilla."></textarea>
+
+                                <section class="editor-section">
+                                    <div class="section-header">
+                                        <h3>Guion de entrevista</h3>
+                                        <button type="button" id="addProjectInterviewSectionButton">+ Seccion</button>
+                                    </div>
+                                    <div id="projectInterviewSections" class="section-list"></div>
+                                </section>
+
+                                <section class="editor-section">
+                                    <div class="section-header">
+                                        <h3>Estructura de minuta</h3>
+                                        <button type="button" id="addProjectMinuteSectionButton">+ Seccion</button>
+                                    </div>
+                                    <div id="projectMinuteSections" class="section-list"></div>
+                                </section>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <section id="authGate" class="auth-gate hidden">
+        <div class="auth-card">
+            <p class="eyebrow">Acceso protegido</p>
+            <h1>Entra a tu espacio de trabajo</h1>
+            <p class="hero-copy">Protege tus entrevistas mientras la app vive en linea. Usa el usuario y password configurados en el servidor.</p>
+            <form id="loginForm" class="auth-form">
+                <input id="loginUsername" autocomplete="username" placeholder="Usuario">
+                <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password">
+                <button id="loginButton" type="submit" class="primary">Entrar</button>
+                <p id="loginError" class="login-error hidden"></p>
+            </form>
+        </div>
+    </section>
+    </main>
+
+    <template id="projectItemTemplate">
+        <button class="project-item">
+            <span class="project-name"></span>
+            <small></small>
+        </button>
+    </template>
+
+    <template id="templateListItemTemplate">
+        <button class="template-list-item">
+            <strong class="template-item-name"></strong>
+            <small class="template-item-meta"></small>
+        </button>
+    </template>
+
+    <template id="requirementListItemTemplate">
+        <button class="requirement-list-item">
+            <strong class="requirement-item-name"></strong>
+            <small class="requirement-item-meta"></small>
+            <small class="requirement-item-extra"></small>
+        </button>
+    </template>
+
+    <template id="interviewSectionTemplate">
+        <article class="editor-card interview-card">
+            <input class="section-title-input" placeholder="Titulo de la seccion">
+            <textarea class="section-prompt-input" placeholder="Prompt o contexto de esta seccion."></textarea>
+            <div class="questions-list"></div>
+            <div class="form-actions">
+                <button type="button" class="add-question-button">+ Pregunta</button>
+                <button type="button" class="remove-section-button danger">Eliminar seccion</button>
+            </div>
+        </article>
+    </template>
+
+    <template id="questionTemplate">
+        <div class="inline-editor">
+            <textarea class="question-input" placeholder="Pregunta o prompt puntual."></textarea>
+            <button type="button" class="remove-question-button danger">Quitar</button>
+        </div>
+    </template>
+
+    <template id="minuteSectionTemplate">
+        <article class="editor-card minute-card">
+            <input class="minute-title-input" placeholder="Titulo de la seccion de minuta">
+            <textarea class="minute-prompt-input" placeholder="Indicacion para completar esta parte de la minuta."></textarea>
+            <button type="button" class="remove-minute-section-button danger">Eliminar seccion</button>
+        </article>
+    </template>
+
+    <template id="surveyTemplate">
+        <article class="survey-card">
+            <details open>
+                <summary>
+                    <div class="survey-summary-content">
+                        <span class="survey-title"></span>
+                        <small class="survey-meta"></small>
+                    </div>
+                    <div class="survey-summary-actions">
+                        <button type="button" class="icon-button danger delete-survey-summary" title="Eliminar encuesta" aria-label="Eliminar encuesta">🗑</button>
+                    </div>
+                </summary>
+
+                <div class="survey-grid">
+                    <input class="survey-title-input" placeholder="Encuesta 1">
+                    <input class="survey-objective-input" placeholder="Objetivo de esta entrevista">
+                </div>
+
+                <section class="section-card users-box">
+                    <div class="section-header">
+                        <h3>Usuarios</h3>
+                        <button type="button" class="add-guest-button">+ Persona</button>
+                    </div>
+                    <div class="participants"></div>
+                </section>
+
+                <section class="section-card applied-template-box">
+                    <div class="section-header">
+                        <h3>Plantilla aplicada</h3>
+                    </div>
+                    <div class="applied-template"></div>
+                </section>
+
+                <section class="section-card interview-guide-box">
+                    <div class="section-header">
+                        <h3>Guia de entrevista</h3>
+                    </div>
+                    <div class="interview-guide"></div>
+                </section>
+
+                <section class="section-card transcript-box">
+                    <details class="transcript-details">
+                        <summary>
+                            <span>Transcript</span>
+                            <button type="button" class="copy-conversation-button">Copiar toda la entrevista</button>
+                        </summary>
+                        <div class="transcript-list"></div>
+                    </details>
+                </section>
+
+                <section class="section-card review-box">
+                    <div class="section-header">
+                        <h3>Validacion y minuta</h3>
+                    </div>
+                    <div class="survey-review"></div>
+                </section>
+            </details>
+        </article>
+    </template>
+
+    <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "current_task": "Add login protection and prepare the app for simple online deployment",
+  "completed": [
+    "Copy and adapt agent documentation from the reference project",
+    "Create .NET 10 solution with Clean Architecture style layers",
+    "Implement JSON local persistence for projects, surveys, mentions and requirements",
+    "Create minimal API endpoints",
+    "Create responsive static web UI with voice-capture support",
+    "Validate build with scripts/verify_env.ps1",
+    "Smoke-test the app through localhost",
+    "Split RequirementWorkspaceService into focused AppCore services",
+    "Split the monolithic browser script into ES modules by feature",
+    "Add project guardrails for architecture and dual-theme UI support",
+    "Enable persistent dark mode for the web app"
+    ,
+    "Document current system state, interview workflow and survey behavior agreements",
+    "Add LAN run/publish scripts for phone access",
+    "Add session login and Docker deployment prep"
+  ],
+  "pending": [
+    "Continue splitting the survey frontend module into smaller units",
+    "Add automated tests around RequirementWorkspaceService",
+    "Add export/download for requirement documents",
+    "Decide whether to keep JSON or move to SQLite after real usage",
+    "Validate dictation behavior on a real mobile browser",
+    "Validate hosted login plus persistent volume on a real Internet deployment"
+  ],
+  "last_updated": "2026-05-23",
+  "notes": [
+    "The app has no login by design.",
+    "Personal data is stored in data/workspace.json and ignored by git.",
+    "Voice dictation uses the browser Web Speech API with es-MX language.",
+    "The API serves the static frontend from wwwroot.",
+    "The frontend now boots as ES modules from wwwroot/js.",
+    "The UI must render correctly in both light and dark themes.",
+    "Survey transcript and minute output should preserve chronological turn order per question.",
+    "Interview behavior and current implementation agreements are documented in docs/agent/current-system-state.md and docs/product/interview-workflow.md.",
+    "The recommended first mobile setup is LAN access from the same Wi-Fi network.",
+    "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage."
+  ],
+  "decisions": [
+    "Use JSON local storage for the first version instead of a database.",
+    "Serve a static frontend from the API to keep deployment simple.",
+    "Keep VABELRoutes-like layer boundaries, but avoid Mobile and authentication for this product.",
+    "Prefer focused AppCore helpers over one large orchestration service.",
+    "Prefer feature-based frontend modules over a single browser script file.",
+    "Prefer theme tokens over hardcoded colors for all new UI work.",
+    "Treat each speaker change as a new interview turn instead of merging all text by person within a question.",
+    "Require future survey/voice work to preserve the documented interview workflow unless the docs are intentionally updated.",
+    "Prefer LAN exposure over Internet deployment as the first phone-access path because the app is local-first and has no login.",
+    "Use a shared session login backed by environment variables as the first online protection layer instead of introducing a full user system."
+  ],
+  "blocked_items": [],
+  "next_actions": [
+    "Use the app in a real interview and refine the capture flow.",
+    "Try the LAN script from a phone on the same Wi-Fi network.",
+    "Deploy the Docker image to a host with persistent disk and configure Auth__Password.",
+    "Break the remaining large survey module into capture, transcript and review submodules.",
+    "Add export to Markdown once the preferred requirement format stabilizes.",
+    "Keep current-system-state and interview-workflow documents in sync with future survey changes."
+  ]
+}

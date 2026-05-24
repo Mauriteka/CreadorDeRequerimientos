@@ -1,0 +1,12 @@
+.git
+.vs
+.vscode
+artifacts
+bin
+obj
+**/bin
+**/obj
+server-out.log
+server-err.log
+tmp-server-*.out.log
+data/*.json

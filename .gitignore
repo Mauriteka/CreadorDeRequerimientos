@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.log
+artifacts/
+data/*.json
+data/*.tmp

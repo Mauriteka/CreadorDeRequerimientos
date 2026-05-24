@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CreadorDeRequerimientos.API/CreadorDeRequerimientos.API.csproj" />
+    <Project Path="src/CreadorDeRequerimientos.AppCore/CreadorDeRequerimientos.AppCore.csproj" />
+    <Project Path="src/CreadorDeRequerimientos.Contracts/CreadorDeRequerimientos.Contracts.csproj" />
+    <Project Path="src/CreadorDeRequerimientos.Domain/CreadorDeRequerimientos.Domain.csproj" />
+    <Project Path="src/CreadorDeRequerimientos.Infrastructure/CreadorDeRequerimientos.Infrastructure.csproj" />
+  </Folder>
+</Solution>
