@@ -1,5 +1,5 @@
 {
-  "current_task": "Add login protection and prepare the app for simple online deployment",
+  "current_task": "Stabilize the Railway production deployment after adding login",
   "completed": [
     "Copy and adapt agent documentation from the reference project",
     "Create .NET 10 solution with Clean Architecture style layers",
@@ -15,7 +15,8 @@
     ,
     "Document current system state, interview workflow and survey behavior agreements",
     "Add LAN run/publish scripts for phone access",
-    "Add session login and Docker deployment prep"
+    "Add session login and Docker deployment prep",
+    "Fix production auth route grouping so login and workspace APIs work together"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -23,7 +24,8 @@
     "Add export/download for requirement documents",
     "Decide whether to keep JSON or move to SQLite after real usage",
     "Validate dictation behavior on a real mobile browser",
-    "Validate hosted login plus persistent volume on a real Internet deployment"
+    "Validate hosted login plus persistent volume on a real Internet deployment",
+    "Retest production project/template creation after Railway redeploy"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -36,7 +38,8 @@
     "Survey transcript and minute output should preserve chronological turn order per question.",
     "Interview behavior and current implementation agreements are documented in docs/agent/current-system-state.md and docs/product/interview-workflow.md.",
     "The recommended first mobile setup is LAN access from the same Wi-Fi network.",
-    "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage."
+    "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage.",
+    "Auth endpoints must remain outside the protected workspace API route group."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",
@@ -48,7 +51,8 @@
     "Treat each speaker change as a new interview turn instead of merging all text by person within a question.",
     "Require future survey/voice work to preserve the documented interview workflow unless the docs are intentionally updated.",
     "Prefer LAN exposure over Internet deployment as the first phone-access path because the app is local-first and has no login.",
-    "Use a shared session login backed by environment variables as the first online protection layer instead of introducing a full user system."
+    "Use a shared session login backed by environment variables as the first online protection layer instead of introducing a full user system.",
+    "Protect only workspace API endpoints with authorization; keep auth status/login/logout public."
   ],
   "blocked_items": [],
   "next_actions": [

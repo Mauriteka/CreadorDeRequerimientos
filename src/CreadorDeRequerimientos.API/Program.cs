@@ -73,9 +73,8 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var api = app.MapGroup("/api");
-var authApi = api.MapGroup("/auth");
-var secureApi = api.RequireAuthorization();
+var authApi = app.MapGroup("/api/auth");
+var secureApi = app.MapGroup("/api").RequireAuthorization();
 
 authApi.MapGet("/status", (HttpContext httpContext, WorkspaceAuthService authService) =>
     Results.Ok(new AuthStatusResponse(

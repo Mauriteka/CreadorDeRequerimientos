@@ -63,3 +63,11 @@
 - Changes: Added cookie-based auth with `Auth__Username` and `Auth__Password` server configuration; protected workspace API endpoints while keeping auth status/login/logout endpoints public; added a frontend login gate and logout flow; added `Dockerfile` and `.dockerignore`; documented online deployment requirements including persistent storage for `Workspace__DataFile`.
 - Pending: Validate the login flow in a real hosted environment with `https` and mounted persistent storage.
 - Risks: The app still uses a single shared password and local-file JSON persistence, so Internet deployment must mount persistent disk and treat the password as a secret.
+
+## 2026-05-23 - Production Auth Route Fix
+
+- Date: 2026-05-23
+- Task: Fix production behavior where authenticated UI loaded but workspace actions did not respond.
+- Changes: Split public auth endpoints into their own `/api/auth` route group and protected only the workspace `/api` group; verified locally that auth status, login, default template seeding and project creation work with auth enabled.
+- Pending: Redeploy Railway and verify the production buttons after the new commit is live.
+- Risks: If Railway volume permissions are misconfigured, workspace saves can still fail independently of auth.
