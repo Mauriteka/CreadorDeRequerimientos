@@ -50,6 +50,8 @@ Por eso `Workspace__DatabaseFile` debe apuntar a una ruta dentro del volumen per
 
 Si `workspace.db` no existe o esta vacia, la app intenta importar automaticamente el contenido de `Workspace__DataFile`.
 El JSON no se borra y queda como respaldo.
+La guia completa de operacion esta en `docs/deployment/sqlite-persistence.md`.
+
 Para rollback temporal al almacenamiento anterior puedes configurar:
 
 ```text

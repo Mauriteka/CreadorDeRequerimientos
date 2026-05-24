@@ -111,3 +111,11 @@
 - Changes: Added a SQLite-backed `IRequirementWorkspaceStore` that stores the workspace as a JSON document in `workspace_state`; changed API configuration to use `Workspace__Storage=sqlite` and `Workspace__DatabaseFile` by default; kept JSON storage available with `Workspace__Storage=json`; documented deployment variables and automatic import from legacy `workspace.json`.
 - Pending: Validate the deployed volume keeps `/data/workspace.db` across redeploys and confirm the first production boot imports existing JSON data.
 - Risks: The first run needs write permissions on the configured database directory; rollback to JSON is available if SQLite package or hosting file permissions misbehave.
+
+## 2026-05-24 - SQLite Persistence Documentation
+
+- Date: 2026-05-24
+- Task: Document the completed SQLite persistence migration for deployment and future maintenance.
+- Changes: Added `docs/deployment/sqlite-persistence.md` with the storage model, Railway variables, first-run JSON import behavior, rollback path and local verification steps; linked the guide from online deployment docs and current system state.
+- Pending: After push succeeds, configure Railway volume and variables before redeploying production.
+- Risks: Rollback to JSON does not copy newer SQLite-only changes back into `workspace.json`.

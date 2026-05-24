@@ -35,6 +35,7 @@ Si la base esta vacia, el sistema puede importar `data/workspace.json` como resp
 - `Infrastructure`
   - Persistencia SQLite local por defecto.
   - Persistencia JSON disponible como rollback por configuracion.
+  - Guia operativa: `docs/deployment/sqlite-persistence.md`.
 - `Contracts`
   - DTOs de API.
 - `API`
