@@ -18,7 +18,8 @@
     "Add session login and Docker deployment prep",
     "Fix production auth route grouping so login and workspace APIs work together",
     "Expand default system template seeds for production",
-    "Regenerate minute drafts when only the header was saved"
+    "Regenerate minute drafts when only the header was saved",
+    "Stabilize mobile speech recognition by disabling auto-reconnect"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -29,7 +30,8 @@
     "Validate hosted login plus persistent volume on a real Internet deployment",
     "Retest production project/template creation after Railway redeploy",
     "Confirm the full default template pack appears in Railway",
-    "Retest production minute generation after a dictated interview"
+    "Retest production minute generation after a dictated interview",
+    "Retest Android microphone behavior after Railway redeploy"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -45,7 +47,8 @@
     "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage.",
     "Auth endpoints must remain outside the protected workspace API route group.",
     "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones.",
-    "Minute generation should regenerate title-only drafts when saved transcript turns exist."
+    "Minute generation should regenerate title-only drafts when saved transcript turns exist.",
+    "Mobile speech capture should pause after recognition ends instead of auto-restarting in a loop."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",

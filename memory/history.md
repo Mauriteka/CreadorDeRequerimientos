@@ -87,3 +87,11 @@
 - Changes: The survey UI now regenerates minute text when the current draft has saved transcript turns but no section structure; saving/finalizing a minute first syncs pending capture buffers so recently dictated text is included.
 - Pending: Redeploy Railway and retest saving/finalizing a survey with transcript turns.
 - Risks: If no turns were saved at all, the minute can only show the header and suggested sections until capture sync succeeds.
+
+## 2026-05-23 - Mobile Speech Stabilization
+
+- Date: 2026-05-23
+- Task: Stop Android microphone reconnect loops in production.
+- Changes: Mobile browsers now use manual speech sessions instead of continuous auto-restart; when Android/iOS ends recognition, the app syncs current text, pauses capture and asks the user to tap start again.
+- Pending: Redeploy Railway and validate microphone behavior on Android Chrome.
+- Risks: Mobile dictation now requires more taps, but avoids the repeated connect/disconnect loop.

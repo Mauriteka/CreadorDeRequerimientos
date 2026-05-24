@@ -1636,6 +1636,13 @@ function normalizeMinuteText(text, survey) {
 }
 
 function restartRecognitionForPendingCapture(pending) {
+    if (shouldUseManualMobileSpeech()) {
+        pending.status = "paused";
+        setSpeechStatus("Dictado en pausa; toca iniciar para seguir grabando");
+        renderSurveyCapture(pending.surveyId);
+        return;
+    }
+
     state.captureRestartAttempts = 0;
 
     const tryStart = () => {
@@ -1710,6 +1717,10 @@ function buildMinuteTextFromSurvey(survey) {
     return lines.join("\n").trim();
 }
 
+function shouldUseManualMobileSpeech() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+}
+
 export function setupSpeech() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -1720,7 +1731,7 @@ export function setupSpeech() {
     state.recognition = new SpeechRecognition();
     state.recognition.lang = "es-MX";
     state.recognition.interimResults = true;
-    state.recognition.continuous = true;
+    state.recognition.continuous = !shouldUseManualMobileSpeech();
     state.recognition.maxAlternatives = 1;
     state.recognition.onstart = () => {
         if (!state.activeCapture) return;
@@ -1838,6 +1849,16 @@ export function setupSpeech() {
         }
 
         if (capture.status === "recording") {
+            if (shouldUseManualMobileSpeech()) {
+                if (capture.text.trim()) await syncActiveCapture(capture.surveyId);
+                capture.status = "paused";
+                capture.processing = false;
+                capture.stopReason = null;
+                setSpeechStatus("Dictado en pausa; toca iniciar para seguir grabando");
+                renderSurveyCapture(capture.surveyId);
+                return;
+            }
+
             setSpeechStatus("Reconectando microfono...");
             capture.restartTimer = setTimeout(() => {
                 if (!state.activeCapture || state.activeCapture.surveyId !== capture.surveyId || state.activeCapture.status !== "recording") return;
