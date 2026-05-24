@@ -71,3 +71,11 @@
 - Changes: Split public auth endpoints into their own `/api/auth` route group and protected only the workspace `/api` group; verified locally that auth status, login, default template seeding and project creation work with auth enabled.
 - Pending: Redeploy Railway and verify the production buttons after the new commit is live.
 - Risks: If Railway volume permissions are misconfigured, workspace saves can still fail independently of auth.
+
+## 2026-05-23 - Default Template Pack
+
+- Date: 2026-05-23
+- Task: Restore useful starter templates in production instead of shipping only the base interview template.
+- Changes: Expanded the default system template factory to seed four templates: base requirements discovery, operational process, existing system improvement and reporting/dashboard; made normalization add missing default templates without duplicating existing templates by name.
+- Pending: Redeploy Railway and confirm the system template catalog shows the full starter pack.
+- Risks: Existing production workspaces only receive the new templates when the workspace is loaded and normalization can save to the configured persistent volume.

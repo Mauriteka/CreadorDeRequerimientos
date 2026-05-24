@@ -46,29 +46,37 @@ public sealed class WorkspaceNormalizer(DefaultSurveyTemplateFactory templateFac
 
     private bool EnsureDefaultSystemTemplate(RequirementWorkspace workspace)
     {
-        if (workspace.SystemTemplates.Count == 0)
+        var changed = false;
+        foreach (var seedTemplate in templateFactory.CreateDefaultSystemTemplates())
         {
-            workspace.SystemTemplates.Add(templateFactory.CreateDefaultSystemTemplate());
-            return true;
+            var existing = workspace.SystemTemplates.FirstOrDefault(item =>
+                item.Scope == "system" &&
+                string.Equals(item.Name, seedTemplate.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (existing is null)
+            {
+                workspace.SystemTemplates.Add(seedTemplate);
+                changed = true;
+            }
         }
 
         var defaultTemplate = workspace.SystemTemplates.FirstOrDefault(item =>
             item.Scope == "system" &&
             string.Equals(item.Name, "Levantamiento base de requerimientos", StringComparison.OrdinalIgnoreCase));
 
-        if (defaultTemplate is null || defaultTemplate.MinuteSections.Count >= 8)
+        if (defaultTemplate is not null && defaultTemplate.MinuteSections.Count < 8)
         {
-            return false;
+            var upgraded = templateFactory.CreateDefaultSystemTemplate();
+            defaultTemplate.Update(
+                upgraded.Name,
+                upgraded.Description,
+                "system",
+                upgraded.InterviewSections,
+                upgraded.MinuteSections);
+            changed = true;
         }
 
-        var upgraded = templateFactory.CreateDefaultSystemTemplate();
-        defaultTemplate.Update(
-            upgraded.Name,
-            upgraded.Description,
-            "system",
-            upgraded.InterviewSections,
-            upgraded.MinuteSections);
-        return true;
+        return changed;
     }
 
     private bool NormalizeSurvey(UserSurvey survey)

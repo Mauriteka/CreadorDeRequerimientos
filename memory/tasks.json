@@ -16,7 +16,8 @@
     "Document current system state, interview workflow and survey behavior agreements",
     "Add LAN run/publish scripts for phone access",
     "Add session login and Docker deployment prep",
-    "Fix production auth route grouping so login and workspace APIs work together"
+    "Fix production auth route grouping so login and workspace APIs work together",
+    "Expand default system template seeds for production"
   ],
   "pending": [
     "Continue splitting the survey frontend module into smaller units",
@@ -25,7 +26,8 @@
     "Decide whether to keep JSON or move to SQLite after real usage",
     "Validate dictation behavior on a real mobile browser",
     "Validate hosted login plus persistent volume on a real Internet deployment",
-    "Retest production project/template creation after Railway redeploy"
+    "Retest production project/template creation after Railway redeploy",
+    "Confirm the full default template pack appears in Railway"
   ],
   "last_updated": "2026-05-23",
   "notes": [
@@ -39,7 +41,8 @@
     "Interview behavior and current implementation agreements are documented in docs/agent/current-system-state.md and docs/product/interview-workflow.md.",
     "The recommended first mobile setup is LAN access from the same Wi-Fi network.",
     "Internet deployment now expects auth secrets in environment variables and a persistent file path for workspace storage.",
-    "Auth endpoints must remain outside the protected workspace API route group."
+    "Auth endpoints must remain outside the protected workspace API route group.",
+    "Default system templates are seeded by name, so production can receive missing templates without duplicating existing ones."
   ],
   "decisions": [
     "Use JSON local storage for the first version instead of a database.",
