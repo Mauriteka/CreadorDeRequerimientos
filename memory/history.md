@@ -127,3 +127,27 @@
 - Changes: Added `docs/deployment/sqlite-persistence.md` with the storage model, Railway variables, first-run JSON import behavior, rollback path and local verification steps; linked the guide from online deployment docs and current system state.
 - Pending: After push succeeds, configure Railway volume and variables before redeploying production.
 - Risks: Rollback to JSON does not copy newer SQLite-only changes back into `workspace.json`.
+
+## 2026-05-25 - API Split And MAUI Client MVP
+
+- Date: 2026-05-25
+- Task: Start the client/server migration with a native .NET MAUI app for Android and Windows.
+- Changes: Split API startup into service and endpoint modules while keeping the existing `/api/...` routes; made workspace API access conditional on auth being configured; added local-client CORS; created `src/CreadorDeRequerimientos.Mobile` with Shell, XAML/MVVM pages for projects, project detail, survey capture and raw JSON API services; added Android internet/network/microphone permissions and Windows target support.
+- Pending: Implement native speech capture behind `ISpeechCaptureService`, add optional login UI for auth-enabled servers and do a real-device Android pass against `scripts/run_mobile.ps1`.
+- Risks: The MAUI MVP intentionally uses manual capture fallback; local SQLite files can still be locked by old API processes or interrupted test runs.
+
+## 2026-05-25 - REST Controllers Alignment
+
+- Date: 2026-05-25
+- Task: Align the API surface with the VABELRoutes controller-based structure.
+- Changes: Replaced the workspace Minimal API endpoint modules with `ApiController`-based controllers for auth, projects, templates, surveys and requirements; kept the existing REST route shapes so the web and MAUI clients continue using `/api/...`; moved optional workspace auth into an MVC filter.
+- Pending: Consider adding the VABELRoutes-style response envelope only after updating both clients to parse it.
+- Risks: The API intentionally still returns raw DTOs for compatibility with the existing frontend and mobile client.
+
+## 2026-05-25 - Android Continuous Dictation
+
+- Date: 2026-05-25
+- Task: Make the Android MAUI client useful for real interviews with continuous dictation.
+- Changes: Added continuous Android speech capture backed by `SpeechRecognizer`; the capture screen can start/stop microphone listening, receives recognized phrases into the active turn and auto-saves pending text when changing participant or question.
+- Pending: Validate on a real Android phone with Google Speech Services installed and tune restart timing if the device cuts recognition aggressively.
+- Risks: Android speech recognition is still session-based internally, so the app hides restarts but cannot prevent OS/service-level interruptions.

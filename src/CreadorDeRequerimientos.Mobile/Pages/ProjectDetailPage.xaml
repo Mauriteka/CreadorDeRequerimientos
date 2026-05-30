@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CreadorDeRequerimientos.Mobile.Pages.ProjectDetailPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:contracts="clr-namespace:CreadorDeRequerimientos.Contracts;assembly=CreadorDeRequerimientos.Contracts"
+    xmlns:viewModels="clr-namespace:CreadorDeRequerimientos.Mobile.ViewModels"
+    x:DataType="viewModels:ProjectDetailViewModel"
+    Title="Proyecto">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding Project.Name}" FontSize="26" FontAttributes="Bold" />
+                <Label Text="{Binding Project.FeatureName}" Style="{StaticResource MutedLabel}" />
+                <Label Text="{Binding StatusMessage}" Style="{StaticResource MutedLabel}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Nueva encuesta" FontSize="18" FontAttributes="Bold" />
+                    <Entry Text="{Binding NewSurveyTitle}" Placeholder="Titulo" />
+                    <Entry Text="{Binding NewSurveyInterviewee}" Placeholder="Entrevistado" />
+                    <Editor Text="{Binding NewSurveyObjective}" Placeholder="Objetivo" AutoSize="TextChanges" MinimumHeightRequest="80" />
+                    <Button Text="Crear encuesta" Command="{Binding CreateSurveyCommand}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Encuestas" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+                <Button Grid.Column="1" Text="Actualizar" Command="{Binding LoadCommand}" />
+            </Grid>
+
+            <CollectionView
+                ItemsSource="{Binding Surveys}"
+                SelectionMode="Single"
+                SelectionChanged="OnSurveySelectionChanged"
+                HeightRequest="260">
+                <CollectionView.EmptyView>
+                    <Label Text="Este proyecto aun no tiene encuestas." Style="{StaticResource MutedLabel}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="contracts:SurveyResponse">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" />
+                                <Label Text="{Binding Interviewee}" Style="{StaticResource MutedLabel}" />
+                                <Label Text="{Binding TranscriptTurns.Count, StringFormat='{0} turno(s)'}" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Requerimientos" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+                <Button Grid.Column="1" Text="Borrador" Command="{Binding CreateRequirementDraftCommand}" />
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Requirements}" HeightRequest="220">
+                <CollectionView.EmptyView>
+                    <Label Text="No hay requerimientos todavia." Style="{StaticResource MutedLabel}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="contracts:RequirementDocumentResponse">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Title}" FontSize="17" FontAttributes="Bold" />
+                                <Label Text="{Binding Stage}" Style="{StaticResource MutedLabel}" />
+                                <Label Text="{Binding Summary}" Style="{StaticResource MutedLabel}" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

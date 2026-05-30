@@ -32,6 +32,32 @@ La app usa `Web Speech API`.
 - Algunos navegadores moviles requieren `https` o un contexto seguro para exponer reconocimiento de voz.
 - Si el dictado no aparece en el celular, la captura manual por texto debe seguir funcionando.
 
+## Cliente instalable .NET MAUI
+
+El repo tambien incluye un primer cliente instalable en:
+
+`src/CreadorDeRequerimientos.Mobile`
+
+La app MAUI consume la misma API local. Por defecto apunta a:
+
+- Android emulator: `http://10.0.2.2:5046`
+- Windows: `http://localhost:5046`
+
+Para apuntarla a una PC en red local o a un tunel, define:
+
+```powershell
+$env:CREADOR_API_BASE_URL="http://TU_IP_LOCAL:5046"
+```
+
+Comandos de validacion:
+
+```powershell
+dotnet build .\src\CreadorDeRequerimientos.Mobile\CreadorDeRequerimientos.Mobile.csproj -f net10.0-android -m:1 /nr:false /p:UseSharedCompilation=false
+dotnet build .\src\CreadorDeRequerimientos.Mobile\CreadorDeRequerimientos.Mobile.csproj -f net10.0-windows10.0.19041.0 -m:1 /nr:false /p:UseSharedCompilation=false
+```
+
+El MVP de MAUI usa captura manual como fallback de voz. Android ya declara permiso de microfono para habilitar una implementacion nativa posterior.
+
 ## Publicar una carpeta ejecutable
 
 Si quieres dejar una carpeta lista para mover o copiar a otra maquina:

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CreadorDeRequerimientos.Mobile.Pages.SurveyCapturePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:contracts="clr-namespace:CreadorDeRequerimientos.Contracts;assembly=CreadorDeRequerimientos.Contracts"
+    xmlns:viewModels="clr-namespace:CreadorDeRequerimientos.Mobile.ViewModels"
+    x:DataType="viewModels:SurveyCaptureViewModel"
+    Title="Captura">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="14">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding Survey.Title}" FontSize="24" FontAttributes="Bold" />
+                <Label Text="{Binding CaptureMode}" Style="{StaticResource MutedLabel}" />
+                <Label Text="{Binding StatusMessage}" Style="{StaticResource MutedLabel}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource CardBorder}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Turno actual" FontSize="18" FontAttributes="Bold" />
+                    <Picker
+                        Title="Participante"
+                        ItemsSource="{Binding Participants}"
+                        SelectedItem="{Binding SelectedParticipant}"
+                        ItemDisplayBinding="{Binding DisplayName}" />
+                    <Picker
+                        Title="Pregunta"
+                        ItemsSource="{Binding Questions}"
+                        SelectedItem="{Binding SelectedQuestion}"
+                        ItemDisplayBinding="{Binding DisplayText}" />
+                    <Editor
+                        Text="{Binding CapturedText}"
+                        Placeholder="Escribe o pega la mencion capturada"
+                        AutoSize="TextChanges"
+                        MinimumHeightRequest="120" />
+                    <HorizontalStackLayout Spacing="8">
+                        <CheckBox IsChecked="{Binding Important}" />
+                        <Label Text="Importante" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Button
+                        Text="{Binding ContinuousCaptureButtonText}"
+                        Command="{Binding ToggleContinuousCaptureCommand}"
+                        IsVisible="{Binding CanUseContinuousCapture}" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="{Binding CaptureButtonText}" Command="{Binding CaptureCommand}" />
+                        <Button Grid.Column="1" Text="Guardar turno" Command="{Binding SaveTurnCommand}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Transcript" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+                <Button Grid.Column="1" Text="Actualizar" Command="{Binding LoadCommand}" />
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding TranscriptTurns}" HeightRequest="360">
+                <CollectionView.EmptyView>
+                    <Label Text="Aun no hay turnos guardados." Style="{StaticResource MutedLabel}" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="contracts:TranscriptTurnResponse">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding SpeakerName}" FontAttributes="Bold" />
+                                <Label Text="{Binding Text}" />
+                                <Label Text="{Binding Tag}" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

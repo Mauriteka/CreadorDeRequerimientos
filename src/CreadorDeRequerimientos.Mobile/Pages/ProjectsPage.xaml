@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CreadorDeRequerimientos.Mobile.Pages.ProjectsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:contracts="clr-namespace:CreadorDeRequerimientos.Contracts;assembly=CreadorDeRequerimientos.Contracts"
+    xmlns:viewModels="clr-namespace:CreadorDeRequerimientos.Mobile.ViewModels"
+    x:DataType="viewModels:ProjectsViewModel"
+    Title="Proyectos">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
+        <VerticalStackLayout Spacing="4">
+            <Label Text="Proyectos" FontSize="26" FontAttributes="Bold" />
+            <Label Text="{Binding StatusMessage}" Style="{StaticResource MutedLabel}" />
+        </VerticalStackLayout>
+
+        <RefreshView Grid.Row="1" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+            <CollectionView
+                ItemsSource="{Binding Projects}"
+                SelectionMode="Single"
+                SelectionChanged="OnProjectSelectionChanged">
+                <CollectionView.EmptyView>
+                    <Label Text="No hay proyectos para mostrar." HorizontalOptions="Center" VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="contracts:ProjectSummaryResponse">
+                        <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="4">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="1" Text="{Binding SurveyCount, StringFormat='{0} enc.'}" Style="{StaticResource MutedLabel}" />
+                                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding FeatureName}" Style="{StaticResource MutedLabel}" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding RequirementCount, StringFormat='{0} requerimiento(s)'}" Style="{StaticResource MutedLabel}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="2" Text="Actualizar" Command="{Binding LoadCommand}" />
+    </Grid>
+</ContentPage>
